@@ -77,15 +77,14 @@ button {
     .button-group {
         width: 100%;
         justify-content: center;
-        gap: 5px; /* 모바일에서는 버튼 간격 줄이기 */
     }
 
     #wordInput {
-        width: calc(100% - 20px); /* 모바일에서 입력창 너비 조정 */
+        width: calc(100% - 20px); /* 입력창 크기 조정 */
     }
 
     .word-list {
-        font-size: 10px; /* 모바일에서 폰트 크기 조정 */
+        font-size: 10px; /* 모바일에서 폰트 크기 추가 조정 */
     }
 
     button {
