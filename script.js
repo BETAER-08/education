@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener('DOMContentLoaded', () => {
     const wordInput = document.getElementById('wordInput');
     const saveButton = document.getElementById('saveButton');
@@ -90,20 +89,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 모바일에서 꾹 누르면 삭제
-    alphabetList.addEventListener('touchstart', (event) => {
+    // 우클릭으로 단어 삭제 기능 추가
+    alphabetList.addEventListener('contextmenu', (event) => {
+        event.preventDefault(); // 기본 컨텍스트 메뉴 방지
         if (event.target.tagName === 'SPAN') {
-            event.target.dataset.longpress = true;
-            setTimeout(() => {
-                if (event.target.dataset.longpress) {
-                    const confirmation = confirm("이 단어를 삭제하시겠습니까?");
-                    if (confirmation) {
-                        const div = event.target.closest('div');
-                        const letter = div.getAttribute('data-letter');
-                        const words = wordsByAlphabet[letter];
-                        const wordToRemove = event.target.textContent.split(', ').find(word => event.target.textContent.includes(word));
-                        const wordIndex = words.findIndex(word => word === wordToRemove);
-                        if (wordIndex !== -1) {
+            const div = event.target.closest('div');
+            const letter = div.getAttribute('data-letter');
+            const words = wordsByAlphabet[letter];
+            const wordIndex = words.findIndex(word => event.target.textContent.includes(word));
+            if (wordIndex !== -1) {
+                if (confirm('이 단어를 삭제하시겠습니까?')) {
+                    words.splice(wordIndex, 1); // 해당 단어 삭제
+                    if (words.length === 0) {
+                        delete wordsByAlphabet[letter]; // 알파벳이 빈 경우 삭제
+                    }
+                    updateAlphabetList();
+                }
+            }
+        }
+    });
+
+    // 모바일 터치 제스처 처리
+    let touchStartTime = 0;
+    let touchElement = null;
+
+    alphabetList.addEventListener('touchstart', (event) => {
+        touchStartTime = new Date().getTime();
+        touchElement = event.target;
+    });
+
+    alphabetList.addEventListener('touchend', (event) => {
+        const touchEndTime = new Date().getTime();
+        const touchDuration = touchEndTime - touchStartTime;
+
+        if (touchElement === event.target) {
+            if (touchDuration >= 3000) {
+                // 3초 이상 터치 시 단어 삭제
+                if (event.target.tagName === 'SPAN') {
+                    const div = event.target.closest('div');
+                    const letter = div.getAttribute('data-letter');
+                    const words = wordsByAlphabet[letter];
+                    const wordIndex = words.findIndex(word => event.target.textContent.includes(word));
+                    if (wordIndex !== -1) {
+                        if (confirm('이 단어를 삭제하시겠습니까?')) {
                             words.splice(wordIndex, 1); // 해당 단어 삭제
                             if (words.length === 0) {
                                 delete wordsByAlphabet[letter]; // 알파벳이 빈 경우 삭제
@@ -112,15 +140,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 }
-            }, 1000); // 500ms 후 삭제 확인
+            } else {
+                // 짧은 터치 시 단어 검색
+                if (event.target.tagName === 'SPAN') {
+                    const word = event.target.textContent.trim();
+                    if (confirm('영단어 사전으로 이동하시겠습니까?')) {
+                        window.open(`https://en.dict.naver.com/#/search?query=${encodeURIComponent(word)}`, '_blank');
+                    }
+                }
+            }
         }
     });
 
-    alphabetList.addEventListener('touchend', (event) => {
-        if (event.target.tagName === 'SPAN') {
-            event.target.dataset.longpress = false;
-        }
+    alphabetList.addEventListener('touchcancel', () => {
+        touchStartTime = 0;
+        touchElement = null;
     });
 
-    updateAlphabetList(); // 초기화시 리스트 업데이트
+    updateAlphabetList(); // 초기화 시 리스트 업데이트
 });
