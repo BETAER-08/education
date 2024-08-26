@@ -1,3 +1,4 @@
+// script.js
 document.addEventListener('DOMContentLoaded', () => {
     const wordInput = document.getElementById('wordInput');
     const saveButton = document.getElementById('saveButton');
@@ -89,25 +90,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 우클릭으로 단어 삭제 기능 추가
-    alphabetList.addEventListener('contextmenu', (event) => {
-        event.preventDefault(); // 기본 컨텍스트 메뉴 방지
+    // 모바일에서 꾹 누르면 삭제
+    alphabetList.addEventListener('touchstart', (event) => {
         if (event.target.tagName === 'SPAN') {
-            const confirmation = confirm("이 단어를 삭제하시겠습니까?");
-            if (confirmation) {
-                const div = event.target.closest('div');
-                const letter = div.getAttribute('data-letter');
-                const words = wordsByAlphabet[letter];
-                const wordToRemove = event.target.textContent.split(', ').find(word => event.target.textContent.includes(word));
-                const wordIndex = words.findIndex(word => word === wordToRemove);
-                if (wordIndex !== -1) {
-                    words.splice(wordIndex, 1); // 해당 단어 삭제
-                    if (words.length === 0) {
-                        delete wordsByAlphabet[letter]; // 알파벳이 빈 경우 삭제
+            event.target.dataset.longpress = true;
+            setTimeout(() => {
+                if (event.target.dataset.longpress) {
+                    const confirmation = confirm("이 단어를 삭제하시겠습니까?");
+                    if (confirmation) {
+                        const div = event.target.closest('div');
+                        const letter = div.getAttribute('data-letter');
+                        const words = wordsByAlphabet[letter];
+                        const wordToRemove = event.target.textContent.split(', ').find(word => event.target.textContent.includes(word));
+                        const wordIndex = words.findIndex(word => word === wordToRemove);
+                        if (wordIndex !== -1) {
+                            words.splice(wordIndex, 1); // 해당 단어 삭제
+                            if (words.length === 0) {
+                                delete wordsByAlphabet[letter]; // 알파벳이 빈 경우 삭제
+                            }
+                            updateAlphabetList();
+                        }
                     }
-                    updateAlphabetList();
                 }
-            }
+            }, 500); // 500ms 후 삭제 확인
+        }
+    });
+
+    alphabetList.addEventListener('touchend', (event) => {
+        if (event.target.tagName === 'SPAN') {
+            event.target.dataset.longpress = false;
         }
     });
 
