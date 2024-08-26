@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 }
-            }, 500); // 500ms 후 삭제 확인
+            }, 1000); // 500ms 후 삭제 확인
         }
     });
 
