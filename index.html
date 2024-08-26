@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영단어 목록 앱</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <div id="leftPanel">
+            <input type="text" id="wordInput" placeholder="단어를 입력하세요">
+            <div class="button-container">
+                <button id="saveButton">단어 저장</button>
+                <button id="resetButton">단어 초기화</button>
+            </div>
+            <div id="instructions">
+                <h2>사용 설명서</h2>
+                <p>1. 위 입력창에 단어를 입력하세요.</p>
+                <p>2. 단어 입력하면 첫번째 알파벳 별로 구분됩니다.</p>
+                <p>3. 단어는 좌클릭을 통해 삭제할수 있습니다.</p>
+                <p>4. 모든 단어를 초기화하려면 "단어 초기화" 버튼을 클릭하세요.</p>
+                <p>5. 단어를 좌클릭 하면 사전으로 바로 연결되어 볼수 있습니다.</p>
+            </div>
+        </div>
+        <div id="rightPanel">
+            <div id="alphabetListContainer">
+                <div id="alphabetList">
+                    <!-- 알파벳 목록이 여기에 표시됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
